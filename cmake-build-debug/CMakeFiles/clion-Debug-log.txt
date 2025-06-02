@@ -1,0 +1,7 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -G Ninja -S /Users/jaycelopez/CLionProjects/Projects/My-Pet -B /Users/jaycelopez/CLionProjects/Projects/My-Pet/cmake-build-debug
+-- Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) 
+-- Configuring libogg 1.3.5
+-- Configuring vorbis 1.3.7
+-- Configuring done (1.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/jaycelopez/CLionProjects/Projects/My-Pet/cmake-build-debug

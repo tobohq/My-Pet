@@ -1,0 +1,3 @@
+/Users/jaycelopez/CLionProjects/Projects/My-Pet/cmake-build-debug/_deps/freetype-subbuild/CMakeFiles/freetype-populate.dir
+/Users/jaycelopez/CLionProjects/Projects/My-Pet/cmake-build-debug/_deps/freetype-subbuild/CMakeFiles/edit_cache.dir
+/Users/jaycelopez/CLionProjects/Projects/My-Pet/cmake-build-debug/_deps/freetype-subbuild/CMakeFiles/rebuild_cache.dir
