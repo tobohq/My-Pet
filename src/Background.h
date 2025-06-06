@@ -23,7 +23,6 @@ class Background : public sf::Sprite{
         if (!background.loadFromFile(image)) {
             std::cout << "Failed to load background image" << std::endl;
         }
-        background.setSmooth(false);
         setTextureRect(sf::IntRect(sf::Vector2<int>(0,0),sf::Vector2<int>(256,128)));
 
         // Getting the local bounds to set Origin
@@ -31,6 +30,40 @@ class Background : public sf::Sprite{
         setOrigin(sf::Vector2f(bounds.size.x/2.f, bounds.size.y/2.f));
         setPosition(position);
         setScale(sf::Vector2f(6.05f, 6.15f));
+    }
+
+    // Setters
+    void setBackground(const std::string& image, const sf::Vector2f &position, int photo_width, int photo_height) {
+        if (!background.loadFromFile(image)) {
+            std::cout << "Failed to load background image" << std::endl;
+        }
+        setTextureRect(sf::IntRect(sf::Vector2<int>(0,0),sf::Vector2<int>(photo_width,photo_height)));
+
+        // Getting the local bounds to set Origin
+        sf::FloatRect bounds = getLocalBounds();
+        setOrigin(sf::Vector2f(bounds.size.x/2.f, bounds.size.y/2.f));
+        setPosition(position);
+        setScale(sf::Vector2f(6.05f, 6.15f));
+    }
+
+    void setTotalFrame(int frame) {
+        total_frame = frame;
+    }
+    void setFramePerRow(int frame) {
+        frame_per_row = frame;
+    }
+    void setFrameWidth(int frame) {
+        frame_width = frame;
+    }
+    void setFrameHeight(int frame) {
+        frame_height = frame;
+    }
+
+    void setFrameDimensions(int total_frame, int frame_per_row, int frame_width, int frame_height) {
+        setTotalFrame(total_frame);
+        setFramePerRow(frame_per_row);
+        setFrameWidth(frame_width);
+        setFrameHeight(frame_height);
     }
 
     void update() {

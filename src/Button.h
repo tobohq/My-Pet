@@ -65,6 +65,15 @@ class Button : public sf::RectangleShape {
     }
     return false;
   }
+
+  // Set Rect color and Text Color
+  void set_colors(sf::Color rect_color, sf::Color text_color){
+    this->rect_color = rect_color;
+    this->text_color = text_color;
+
+    setFillColor(rect_color);
+    text.setFillColor(text_color);
+  }
 };
 
 #endif //BUTTON_H

@@ -9,10 +9,9 @@
 #include "Background.h"
 #include <iostream>
 #include <sstream>
+#include "Draggable.h"
 
-void startGame(User &user, Pet &pet, Background &background, sf::Clock &clock, sf::RenderWindow& window);
+void startGame(User &user, Pet &pet, Background &background, sf::Clock &anim_clock, sf::RenderWindow& window, bool show_dog);
 
-// Fixs Precision
-std::string to_string(float number);
 
 #endif //GAME_H

@@ -2,6 +2,6 @@
 -- Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) 
 -- Configuring libogg 1.3.5
 -- Configuring vorbis 1.3.7
--- Configuring done (1.5s)
+-- Configuring done (3.6s)
 -- Generating done (0.0s)
 -- Build files have been written to: /Users/jaycelopez/CLionProjects/Projects/My-Pet/cmake-build-debug

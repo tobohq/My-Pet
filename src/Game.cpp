@@ -1,22 +1,19 @@
 #include "Game.h"
 
-void startGame(User &user, Pet &pet, Background &background, sf::Clock &clock, sf::RenderWindow& window) {
+void startGame(User &user, Pet &pet, Background &background, sf::Clock &anim_clock, sf::RenderWindow& window, bool show_dog) {
     // Getting our window dimensions.
     sf::Vector2u window_size = window.getSize();
 
     // Seconds Per Frame
     float frame_delay = 0.15f;
 
-    // Displaying Background & Pet
-
     // If the clock goes over our seconds per frame, update to the next frame
-    if (clock.getElapsedTime().asSeconds() >= frame_delay) {
+    if (anim_clock.getElapsedTime().asSeconds() >= frame_delay) {
         background.update(); // switching backgrounds frame
         pet.update(); // switching pets frame
-        clock.restart(); // restarts timer
+        anim_clock.restart(); // restarts timer
     }
     window.draw(background);
-    window.draw(pet); // Draw pet on top of background
 
     // Creating a Text object to display our coins
     Text coins_text("Coins: " + std::to_string(user.getCoins()), sf::Color(247,178,66,255));
@@ -28,13 +25,20 @@ void startGame(User &user, Pet &pet, Background &background, sf::Clock &clock, s
 
     // Pet's Status Text:
     std::vector<Text*> stats_texts = {
-         new Text("Energy: " + to_string(pet.getEnergy()), sf::Color(247,178,66,255)),
-         new Text("Hunger: " + to_string(pet.getHunger()), sf::Color(247,178,66,255)),
-         new Text("Playfulness: " + to_string(pet.getPlayfullness()), sf::Color(247,178,66,255)),
-         new Text("Cleanliness: " + to_string(pet.getCleanliness()), sf::Color(247,178,66,255))
+         new Text("Energy: " + std::to_string(pet.getEnergy()), sf::Color(247,178,66,255)),
+         new Text("Hunger: " + std::to_string(pet.getHunger()), sf::Color(247,178,66,255)),
+         new Text("Playfulness: " + std::to_string(pet.getPlayfullness()), sf::Color(247,178,66,255)),
+         new Text("Cleanliness: " + std::to_string(pet.getCleanliness()), sf::Color(247,178,66,255))
     };
 
     float window_y = window_size.y/17.f;
+    sf::RectangleShape background_text(sf::Vector2f(250, window_y + (40 * stats_texts.size())));
+    background_text.setOrigin(sf::Vector2f(background_text.getSize().x / 2, background_text.getSize().y / 2));
+    background_text.setPosition(sf::Vector2f(window_size.x/9.5f, window_y+80));
+    background_text.setFillColor(sf::Color(0,94,36,255));
+
+    window.draw(background_text);
+
     for (auto text_object : stats_texts) {
         // Setting Origin so it's left aligned
         sf::FloatRect bounds = text_object->getLocalBounds();
@@ -50,15 +54,10 @@ void startGame(User &user, Pet &pet, Background &background, sf::Clock &clock, s
         delete text_object; // avoiding memory leak
     }
 
-    // Pet Decreasing Mood
+    if (show_dog) {
+        pet.updatedMood();
+        window.draw(pet);
+    }
 
-    window.draw(pet);
+    user.saveToFile();
 }
-
-std::string to_string(float number) {
-    std::ostringstream stream; // creating string stream
-    stream.precision(1); // how much decimals to show in the stream
-    stream << std::fixed << number; // forces the number to insert in the stream in the fixed-point format
-    return stream.str(); // converts content of the stream to a string
-}
-

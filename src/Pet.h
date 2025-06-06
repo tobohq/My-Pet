@@ -3,9 +3,13 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "StatTimer.h"
 
 class Pet : public sf::Sprite{
-    float energy_level, hunger_level, playfullness_level, cleanliness_level;
+    int energy_level, hunger_level, playfullness_level, cleanliness_level;
+
+    // in 13 seconds, decrease 1 energy
+    StatTimer energy_timer, hunger_timer, playfullness_timer, cleanliness_timer;
 
     sf::Texture dog_sprite;
     int current_frame = 0;
@@ -13,13 +17,12 @@ class Pet : public sf::Sprite{
 
 
     public:
-    // Construcotrs
+    // Constructors
     Pet()
         : Pet(sf::Vector2f(0,0)){}
-
-
     Pet(const sf::Vector2f& position)
-        : Sprite(dog_sprite), energy_level(100), hunger_level(100), playfullness_level(100), cleanliness_level(100)
+        : Sprite(dog_sprite), energy_level(100), hunger_level(100), playfullness_level(100), cleanliness_level(100),
+        energy_timer(13.f), cleanliness_timer(12.f), hunger_timer(7.5f), playfullness_timer(30.f)
     {
         // Photo (256x92) -> 18 frames,
 
@@ -43,17 +46,31 @@ class Pet : public sf::Sprite{
     }
 
     // Level Getters
-    float getEnergy() const {
+    int getEnergy() const {
         return energy_level;
     }
-    float getHunger() const {
+    int getHunger() const {
         return hunger_level;
     }
-    float getPlayfullness() const {
+    int getPlayfullness() const {
         return playfullness_level;
     }
-    float getCleanliness() const {
+    int getCleanliness() const {
         return cleanliness_level;
+    }
+
+    // Setters
+    void setEnergy(int energy) {
+        energy_level = energy;
+    }
+    void setHunger(int hunger) {
+        hunger_level = hunger;
+    }
+    void setPlayfullness(int playfullness) {
+        playfullness_level = playfullness;
+    }
+    void setCleanliness(int cleanliness) {
+        cleanliness_level = cleanliness;
     }
 
     // Update Frame
@@ -70,12 +87,98 @@ class Pet : public sf::Sprite{
         current_frame++;
     }
 
+    // Update Mood
+    void updatedMood() {
+        if (energy_timer.getElapsedTime().asSeconds() > energy_timer.getInterval()) {
+            // in 13 seconds, decrease 1 energy
+            if (!energy_level <= 0) {
+                energy_level -= 1;
+            }
+            energy_timer.restart();
+        }
+
+        if (cleanliness_timer.getElapsedTime().asSeconds() > cleanliness_timer.getInterval()) {
+            // in 12 seconds, decrease 1 cleanliness
+            if (!cleanliness_level <= 0) {
+                cleanliness_level -= 1;
+            }
+            cleanliness_timer.restart();
+        }
+
+        if (hunger_timer.getElapsedTime().asSeconds() > hunger_timer.getInterval()) {
+            // in 7.5 seconds, decrease 1 hunger
+            if (!hunger_level <= 0) {
+                hunger_level -= 1;
+            }
+            hunger_timer.restart();
+        }
+
+        if (playfullness_timer.getElapsedTime().asSeconds() > playfullness_timer.getInterval()) {
+            // in 30 seconds, decrease 1 playfulness
+            if (!playfullness_level <= 0) {
+                playfullness_level -= 1;
+            }
+            playfullness_timer.restart();
+        }
+    }
+
     // Satisfy Needs
 
+    void increaseEnergy() {
+        // increases energy by 1 every 1 second
+        if (energy_timer.getElapsedTime().asSeconds() > 1.f) {
+            if (energy_level < 100) {
+                energy_level += 1;
+            }
+            energy_timer.restart();
+        }
+        energy_timer.restart();
+    }
+
+    void increaseHunger() {
+        if (hunger_level < 100) {
+            if (hunger_level >= 95) {
+                hunger_level += 100 - hunger_level;
+            } else {
+                hunger_level += 5;
+            }
+        }
+        hunger_timer.restart();
+    }
+
+    void increaseCleanliness() {
+        if (cleanliness_level < 100) {
+            if (cleanliness_level >= 95) {
+                cleanliness_level += 100 - cleanliness_level;
+            } else {
+                cleanliness_level += 5;
+            }
+        }
+        cleanliness_timer.restart();
+    }
+
+    void increaseFun() {
+        if (playfullness_level < 100) {
+            if (playfullness_level >= 95) {
+                playfullness_level += 100 - cleanliness_level;
+            } else {
+                playfullness_level += 5;
+            }
+        }
+        playfullness_timer.restart();
+    }
 
     // Check to see if clicked for like fun (being pet)
+    bool clicked(const sf::Event& event, sf::RenderWindow& window) {
+        if (event.is<sf::Event::MouseButtonPressed>()) {
+            sf::Vector2f mouse_pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-    //
+            if (getGlobalBounds().contains(mouse_pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
 #endif //PET_H
