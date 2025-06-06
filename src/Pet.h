@@ -6,12 +6,9 @@
 #include "StatTimer.h"
 
 class Pet : public sf::Sprite{
-    int energy_level, hunger_level, playfullness_level, cleanliness_level;
-
-    // in 13 seconds, decrease 1 energy
-    StatTimer energy_timer, hunger_timer, playfullness_timer, cleanliness_timer;
-
+    StatTimer energy_timer, cleanliness_timer, hunger_timer, playfullness_timer;
     sf::Texture dog_sprite;
+    int energy_level, hunger_level, playfullness_level, cleanliness_level;
     int current_frame = 0;
     int total_frames = 18, frame_per_row = 6, frame_width = 36, frame_height = 36; // Idle
 
@@ -91,7 +88,7 @@ class Pet : public sf::Sprite{
     void updatedMood() {
         if (energy_timer.getElapsedTime().asSeconds() > energy_timer.getInterval()) {
             // in 13 seconds, decrease 1 energy
-            if (!energy_level <= 0) {
+            if (energy_level > 0) {
                 energy_level -= 1;
             }
             energy_timer.restart();
@@ -99,7 +96,7 @@ class Pet : public sf::Sprite{
 
         if (cleanliness_timer.getElapsedTime().asSeconds() > cleanliness_timer.getInterval()) {
             // in 12 seconds, decrease 1 cleanliness
-            if (!cleanliness_level <= 0) {
+            if (cleanliness_level > 0) {
                 cleanliness_level -= 1;
             }
             cleanliness_timer.restart();
@@ -107,7 +104,7 @@ class Pet : public sf::Sprite{
 
         if (hunger_timer.getElapsedTime().asSeconds() > hunger_timer.getInterval()) {
             // in 7.5 seconds, decrease 1 hunger
-            if (!hunger_level <= 0) {
+            if (hunger_level > 0) {
                 hunger_level -= 1;
             }
             hunger_timer.restart();
@@ -115,7 +112,7 @@ class Pet : public sf::Sprite{
 
         if (playfullness_timer.getElapsedTime().asSeconds() > playfullness_timer.getInterval()) {
             // in 30 seconds, decrease 1 playfulness
-            if (!playfullness_level <= 0) {
+            if (playfullness_level > 0) {
                 playfullness_level -= 1;
             }
             playfullness_timer.restart();
@@ -159,17 +156,13 @@ class Pet : public sf::Sprite{
 
     void increaseFun() {
         if (playfullness_level < 100) {
-            if (playfullness_level >= 95) {
-                playfullness_level += 100 - cleanliness_level;
-            } else {
-                playfullness_level += 5;
-            }
+            playfullness_level += 1;
         }
         playfullness_timer.restart();
     }
 
     // Check to see if clicked for like fun (being pet)
-    bool clicked(const sf::Event& event, sf::RenderWindow& window) {
+    bool clicked(const sf::Event& event, const sf::RenderWindow& window) const {
         if (event.is<sf::Event::MouseButtonPressed>()) {
             sf::Vector2f mouse_pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 

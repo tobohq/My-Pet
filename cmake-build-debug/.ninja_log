@@ -126,3 +126,6 @@
 4678	4743	1748361698104891300	_deps/freetype-build/CMakeFiles/freetype.dir/src/pcf/pcf.c.o	3b330361023c8ff3
 5345	5784	1748361698772794915	_deps/sfml-build/src/SFML/Graphics/CMakeFiles/sfml-graphics.dir/RenderWindow.cpp.o	33264d19b5ef99cb
 4743	4796	1748361698169887037	_deps/freetype-build/CMakeFiles/freetype.dir/src/raster/raster.c.o	64bf8c064fe179fd
+39	884	1749219139752062104	CMakeFiles/main.dir/src/game.cpp.o	db7f73fdd9b92c0d
+38	967	1749219139750878740	CMakeFiles/main.dir/src/main.cpp.o	b161fd6381249880
+968	1310	1749219140680783594	bin/main	c0a5dbf891ce28ae
