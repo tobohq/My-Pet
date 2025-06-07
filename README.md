@@ -27,5 +27,3 @@ I also considered adding multiple pets, but chose to focus on polishing the game
 - A menu for new users to pick their pet
 
 - A shop screen to unlock items or outfits
-
-That’s something I’d like to revisit later!
