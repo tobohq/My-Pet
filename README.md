@@ -1,5 +1,5 @@
 # 🐶 Description
-This is a simple Virtual Pet Simulator where you take care of a pomeranian dog. The dog has four main needs: Hunger, Cleanliness, Sleep, and Fun. You can satisfy these needs by interacting with the dog using drag-and-drop objects, buttons, or by clicking directly on the dog.
+This is a simple Virtual Pet Simulator where you take care of a pomeranian dog. The dog has four main needs: Hunger, Cleanliness, Sleep, and Fun. You can satisfy these needs by interacting with the dog using drag-and-drop objects, buttons, or by clicking directly on the dog. Progress saved automatically!
 
 # 🔄 Need Decay Timers:
 - **Hunger** decreases by 1 every **7.5 seconds**
