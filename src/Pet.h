@@ -141,6 +141,16 @@ class Pet : public sf::Sprite{
             }
         }
         hunger_timer.restart();
+    } // default 5 points given
+    void increaseHunger(int points) {
+        if (hunger_level < 100) {
+            hunger_level += points;
+        }
+
+        if (hunger_level > 100) { // if it went over, reset
+            hunger_level = 100;
+        }
+        hunger_timer.restart();
     }
 
     void increaseCleanliness() {

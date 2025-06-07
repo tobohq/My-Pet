@@ -10,6 +10,7 @@ class User {
     Pet user_pet;
     int coins;
     int food_storage;
+    StatTimer coin_clock;
 
     public:
     // Constructors
@@ -47,13 +48,14 @@ class User {
     int getCoins() const {
         return coins;
     }
-
     int getFoodStorage() const {
         return food_storage;
     }
-
     Pet& getPet() {
         return user_pet;
+    }
+    StatTimer& getTimer() {
+        return coin_clock;
     }
 
     // Setters
@@ -67,6 +69,14 @@ class User {
     // Increase coins
     void increaseCoins() {
         coins += 3;
+    }
+    void increaseCoins(int amount) {
+        coins += amount;
+    }
+
+    // Decreasing
+    void decreaseFoodStorage(int amount) {
+        food_storage -= amount;
     }
 
     // Sets the User Object / Pet Object to what is in the User File

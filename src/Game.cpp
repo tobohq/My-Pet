@@ -53,10 +53,18 @@ void startGame(User &user, Pet &pet, Background &background, sf::Clock &anim_clo
         window.draw(*text_object);
         delete text_object; // avoiding memory leak
     }
+    pet.updatedMood();
 
     if (show_dog) {
-        pet.updatedMood();
         window.draw(pet);
+    }
+
+    if (!show_dog && pet.getEnergy() < 100) {
+        if (user.getTimer().getElapsedTime().asSeconds() >= 1.f) {
+            user.increaseCoins(1);
+            user.getPet().increaseEnergy();
+            user.getTimer().restart();
+        }
     }
 
     user.saveToFile();

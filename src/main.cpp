@@ -36,6 +36,7 @@ int main()
 
     // Draggable Objects
     std::vector<Draggable*> foods_list;
+    foods_list.clear();
 
     Draggable soap("Objects/Soap.png", 32, 32);
     soap.setPosition(sf::Vector2f(window.getSize().x - window.getSize().x/11, window.getSize().y/1.4f));
@@ -76,6 +77,9 @@ int main()
 
             if (event->is<sf::Event::Closed>()) {
                 window.close();
+                for (auto it : foods_list) {
+                    delete it;
+                }
             }
 
             // FOR THE MAIN MENU
@@ -97,12 +101,13 @@ int main()
                     std::ifstream user_file("User Data"); //
                     user = new User(user_file); // Points to a
                     user->getPet().setPosition(sf::Vector2f(x_center, window_size.y-window_size.y/3.0));
-                    for (int i=0; i < foods_list.size(); i++) {
+
+                    // If there was previous food stored/bought add them back
+                    for (int i=0; i < user->getFoodStorage(); i++) {
                         auto* new_food = new Draggable("Objects/chicken.png", 32, 32);
-                        new_food->setPosition(sf::Vector2f(window.getSize().x / 7+i, window.getSize().y / 1.4f));
+                        new_food->setPosition(sf::Vector2f(window.getSize().x/7, window.getSize().y / 1.4f));
                         new_food->setScale(sf::Vector2f(6, 6));
-                        foods_list.push_back(new_food);
-                        window.draw(*new_food);
+                        foods_list.push_back(new_food); // add it to our vector
                     }
                 }
 
@@ -115,9 +120,10 @@ int main()
                     user = new User(user_file);
                     user->getPet().setPosition(sf::Vector2f(x_center, window_size.y-window_size.y/3.0));
 
+                    // New Users will always start with 1 food item
                     auto* new_food = new Draggable("Objects/chicken.png", 32, 32);
-                    new_food->setPosition(sf::Vector2f(window.getSize().x / 7, window.getSize().y / 1.4f));
-                    new_food->setScale(sf::Vector2f(6, 6));
+                    new_food->setPosition(sf::Vector2f(window.getSize().x/7, window.getSize().y / 1.4f));
+                    new_food->setScale(sf::Vector2f(6, 6)); // match your later logic
                     foods_list.push_back(new_food);
                 }
             } else { // NOT THE MAIN MENU, WHERE OUR GAME BEGINS
@@ -128,52 +134,53 @@ int main()
                     }
 
                     for (auto it = foods_list.begin(); it != foods_list.end();) {
-                        Draggable* item = *it;
-                        item->handleEvent(*event, window);
-                        item->update(window);
+                        (*it)->handleEvent(*event, window);
+                        (*it)->update(window);
 
-                        if (item->isTouchingDog(user->getPet())) {
-                            if (!foodTouchingDog) {
-                                foodTouchingDog = true;
-                                foodContactClock.restart();
-                            }
+                        // IF THE DOG ISN'T HUNGRY IT SHOULDN'T BE ABLE TO EAT
+                        if (user->getPet().getHunger() < 100){
+                            if ((*it)->isTouchingDog(user->getPet())) {
+                                if (!foodTouchingDog) { // if the food was previously not touching dog
+                                    foodTouchingDog = true; // make it touch
+                                    foodContactClock.restart(); // wait a few seconds before making the dog eat it
+                                }
 
-                            if (foodContactClock.getElapsedTime().asSeconds() >= 1.f) {
-                                user->getPet().increaseHunger();
-                                user->increaseCoins();
-                                delete item;
-                                it = foods_list.erase(it);
-                                foodTouchingDog = false;
-                                continue;
+                                if (foodContactClock.getElapsedTime().asSeconds() >= 1.f) {
+                                    user->getPet().increaseHunger(5); // increases hunger by 5
+                                    user->increaseCoins(); // Increases coins when fed
+
+                                    delete (*it); // delete the food item
+                                    it = foods_list.erase(it); // erase from the vector, and go to the next one
+                                    user->decreaseFoodStorage(1); // decrease food storage by 1 when it gets eaten by dog
+
+                                    foodTouchingDog = false; // no more food touching
+                                    continue; // dont iterate since we already did with erase
+                                }
                             }
                         }
-                        ++it; // Only increment if we didn’t erase
+                        ++it; // only increment's the positition if we didn’t erase
                     }
 
 
                     // Checking to see if the soap is interacting with the dog
                     soap.handleEvent(*event, window);
                     soap.update(window);
-                    if (soap.isTouchingDog(user->getPet())) {
-                        if (!soapTouchingDog) {
-                            soapTouchingDog = true;
-                            soapContactClock.restart(); // Start timing the contact
-                        }
-
-                        if (soapContactClock.getElapsedTime().asSeconds() >= 1.f) {
-                            user->getPet().increaseCleanliness();
-                            if (!(user->getPet().getCleanliness() > 100)) {
-                                user->increaseCoins();
+                    // Similar to the dog logic except dont delete the soap.
+                    if (user->getPet().getCleanliness() < 100) {
+                        if (soap.isTouchingDog(user->getPet())) {
+                            if (!soapTouchingDog) {
+                                soapTouchingDog = true;
+                                soapContactClock.restart(); // Start timing the contact
                             }
-                            soapTouchingDog = false;
+
+                            if (soapContactClock.getElapsedTime().asSeconds() >= 1.f) {
+                                user->getPet().increaseCleanliness();
+                                user->increaseCoins();
+                                soapTouchingDog = false;
+                            }
                         }
-                    } else {
-                        // Reset everything if not touching
-                        soapTouchingDog = false;
                     }
                 }
-
-                // looks through to see if our food list is interacting with the do
 
                 // Button Hover
                 buy_food.hover(window);
@@ -185,9 +192,8 @@ int main()
                         user->setFoodStorage(user->getFoodStorage() + 1);
                         user->setCoins(user->getCoins() - 5);
 
+                        // Create a new food object
                         auto new_food = new Draggable("Objects/chicken.png", 32, 32);
-                        new_food->setPosition(sf::Vector2f(window.getSize().x / 7, window.getSize().y / 1.4f));
-                        new_food->setScale(sf::Vector2f(6, 6));
                         foods_list.push_back(new_food);
                     }
                 }
@@ -208,15 +214,6 @@ int main()
                         show_dog = false;
                     }
                 }
-
-                // Updating the coins for when they're asleep
-                if (!show_dog) {
-                    if (coinClock.getElapsedTime().asSeconds() >= 1.f) {
-                        user->increaseCoins();
-                        user->getPet().increaseEnergy();  // <-- add this line
-                        coinClock.restart();
-                    }
-                }
             }
 
         }
@@ -234,9 +231,16 @@ int main()
 
             // Drawing the Objects like Food & Soap
             window.draw(soap);
-            // All Foood
-            for (auto* food : foods_list) {
-                window.draw(*food);
+            // Draw all Foood
+            int width = window.getSize().x/7; // the width of the location of ham
+            for (auto it = foods_list.begin(); it != foods_list.end();) {
+                if (!(*it)->returnDragging()) {
+                    (*it)->setPosition(sf::Vector2f(width, window.getSize().y / 1.4f));
+                    width += (*it)->getWidth()/1.3;
+                }
+                (*it)->setScale(sf::Vector2f(6, 6));
+                window.draw(**it);
+                ++it;
             }
         }
         window.display();

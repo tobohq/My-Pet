@@ -51,6 +51,11 @@ class Draggable : public sf::Sprite {
     bool returnDragging() {
         return dragging;
     }
+
+    int getWidth() {
+        sf::FloatRect bounds = getGlobalBounds();
+        return bounds.size.x;
+    }
 };
 
 #endif //DRAGGABLE_H
