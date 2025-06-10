@@ -32,7 +32,6 @@ int main()
     sf::Clock animation_clock; // Clock for animation
     sf::Clock soapContactClock;
     sf::Clock foodContactClock;
-    sf::Clock coinClock;
 
     // Draggable Objects
     std::vector<Draggable*> foods_list;
@@ -67,9 +66,6 @@ int main()
     bool soapTouchingDog = false;
     bool foodTouchingDog = false;
 
-    // int index
-    int index = 0;
-
     while (window.isOpen())
     {
         while (const std::optional event = window.pollEvent())
@@ -77,8 +73,9 @@ int main()
 
             if (event->is<sf::Event::Closed>()) {
                 window.close();
-                for (auto it : foods_list) {
-                    delete it;
+                for (auto it = foods_list.begin(); it != foods_list.end();) {
+                    delete *it;
+                    it = foods_list.erase(it);
                 }
             }
 

@@ -1,5 +1,6 @@
 #ifndef BUTTON_H
 #define BUTTON_H
+
 #include <SFML/Graphics.hpp>
 #include "Text.h"
 #include "Pet.h"
